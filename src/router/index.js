@@ -10,6 +10,9 @@ import GamesDetail from "@/components/GamesDetail";
 import Editer from "@/components/Editer";
 import Login from "@/components/Login";
 import Register from "@/components/Register";
+import AdminHome from "@/components/admin/AdminHome";
+import Welcome from "@/components/admin/Welcome";
+import AdminManger from "@/components/admin/AdminManger";
 Vue.use(VueRouter)
 
 const routes = [
@@ -42,7 +45,20 @@ const routes = [
         }},
     {path: '/register',component: Register,meta: {
             title: "GameFaster - 注册"
+        }},
+    {path: '/admin/',component: AdminHome,redirect: '/admin/welcome',
+        children:[
+            {path: "welcome",component: Welcome,meta: {
+                    title: "GameFaster - 后台欢迎页"
+                }},
+            {path: "adminmanger",component: AdminManger,meta: {
+                    title: "GameFaster - 系统用户管理"
+                }}
+        ],
+        meta: {
+            title: "GameFaster - 后台管理"
         }}
+
 ]
 
 const router = new VueRouter({
@@ -53,5 +69,21 @@ router.beforeEach((to, from, next) => {
         document.title = to.meta.title
     }
     next()//执行进入路由，如果不写就不会进入目标页
+})
+router.beforeEach((to, from, next) => {
+    if (to.path === '/login') return next()
+    if (to.path === '/') return next()
+    if (to.path === '/games') return next()
+    if (to.path === '/community') return next()
+    if (to.path === '/news') return next()
+    if (to.path === '/news/1') return next()
+    if (to.path === '/games/1') return next()
+    if (to.path === '/edc') return next()
+    if (to.path === '/register') return next()
+
+
+    //const str = window.sessionStorage.getItem('token')
+    //if (!str) return next('/login')
+    next()
 })
 export default router

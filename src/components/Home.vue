@@ -61,6 +61,7 @@
       <el-card>
         <h4>最新速通</h4>
         <el-divider></el-divider>
+        <el-link ><router-link to="/login">后台管理</router-link></el-link>
       </el-card>
     </el-col>
     <el-col :span="8"></el-col>

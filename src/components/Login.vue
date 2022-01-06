@@ -10,8 +10,8 @@
         <!--     :rules="loginFormRules" bi表单数据验证-->
         <el-form ref="loginFormRef" :model="loginForm" label-width="0px"  :rules="loginFormRules" class="login_form">
           <!--       用户名-->
-          <el-form-item prop="username">
-            <el-input v-model="loginForm.username" prefix-icon="el-icon-user"></el-input>
+          <el-form-item prop="account">
+            <el-input v-model="loginForm.account" prefix-icon="el-icon-user"></el-input>
           </el-form-item>
           <!--       密码-->
           <el-form-item prop="password">
@@ -34,11 +34,11 @@ export default {
   data () {
     return {
       loginForm: {
-        username: 'admin',
+        account: '123@qq.com',
         password: '123456'
       },
       loginFormRules: {
-        username: [
+        account: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
           { min: 3, max: 16, message: '长度在 3 到 16 个字符', trigger: 'blur' }
         ],
@@ -54,19 +54,17 @@ export default {
   },
   methods: {
     login () {
-      // this.$refs.loginFormRef.validate(async valid => {
-      //   if (!valid) return
-      //   const { data: res } = await this.$http.post('/api/login', this.loginForm)
-      //   if (res.code === 1001) {
-      //     return this.$message.error('用户名或密码错误')
-      //   }
-      //   this.$message.success('登录成功')
-      //   window.sessionStorage.setItem('token', res.data.token)
-      //   window.sessionStorage.setItem('aid', res.data.id)
-      //   window.sessionStorage.setItem('aun', res.data.username)
-      //   console.log(res.data.token)
-      //   await this.$router.push('/home')
-      // })
+      this.$refs.loginFormRef.validate(async valid => {
+        if (!valid) return
+        const { data: res } = await this.$http.post('/api/api/login/admin', this.loginForm)
+        console.log(res)
+        if (res.code === 500) {
+          return this.$message.error('用户名或密码错误')
+        }
+        this.$message.success('登录成功')
+        window.sessionStorage.setItem('token','love')
+        await this.$router.push('/admin')
+      })
     },
     // 重置表单
     resetLoginForm () {
