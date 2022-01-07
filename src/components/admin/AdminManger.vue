@@ -20,7 +20,7 @@
       </el-col>
     </el-row>
 <!--    表格区域-->
-    <el-table :data="adminList"  stripe>
+    <el-table :data="adminList"  stripe border>
       <el-table-column label="编号" prop="adminId"></el-table-column>
       <el-table-column label="用户名" prop="username"></el-table-column>
       <el-table-column label="账户名" prop="account"></el-table-column>
@@ -65,6 +65,8 @@
       :visible.sync="drawer"
       :direction="direction"
       custom-class="demo-drawer"
+      :destroy-on-close="true"
+      @close="resetForm('addFormRef')"
       :before-close="handleClose">
     <div class="demo-drawer__content">
       <el-form ref="addFormRef" :model="addForm" :rules="addFormRules" label-width="90px">
@@ -80,11 +82,14 @@
         <el-form-item label="邮箱" prop="email">
           <el-input type="email"  v-model="addForm.email"></el-input>
         </el-form-item>
-        <el-form-item label="联系电话" prop="name">
+        <el-form-item label="联系电话" prop="mobile">
           <el-input  v-model="addForm.mobile"></el-input>
         </el-form-item>
-        <el-form-item label="角色" prop="roles">
-          <el-select v-model="addForm.roleList" multiple placeholder="请选择"></el-select>
+        <el-form-item label="角色" prop="roleList">
+          <el-select v-model="addForm.roleList" multiple  placeholder="请选择">
+            <el-option :value="role.roleId" :label="role.roleName"  :key="role.roleId" v-for="role in rolesList">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="状态" prop="roles">
           <el-switch v-model="addForm.status"
@@ -95,6 +100,11 @@
                      active-text="使用中"
                      disabled
                      ></el-switch>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="addAdmin()">立即添加</el-button>
+          <el-button @click="resetForm('addFormRef')" type="warning">重置</el-button>
+          <el-button @click="drawer = false">取消</el-button>
         </el-form-item>
 
       </el-form>
@@ -110,6 +120,7 @@ export default {
   data () {
     return {
       adminList: [],
+      rolesList: [],
       queryInfo: {
         // 当前的页数
         pageNum: 1,
@@ -140,9 +151,12 @@ export default {
         email: [
           {required: true, message: '请输入邮箱', trigger: 'blur'}
         ],
-        roles: [
-          {required: true, message: '请选择角色', trigger: 'change'}
+        roleList: [
+          { required: true, message: '请选择角色', trigger: 'change'}
         ],
+        mobile: [
+          {require: false}
+        ]
       },
       total: 0,
       drawer: false,
@@ -156,6 +170,22 @@ export default {
       console.log(res)
       this.total = res.data.total
       this.adminList = res.data.list
+    },
+    async getRoleList() {
+      const { data: res } = await this.$http.get('/api/api/role/list/all')
+      this.rolesList = res.data
+    },
+    addAdmin (){
+      this.$refs.addFormRef.validate(async valid =>{
+        if (!valid) return
+        this.$http.post("/api/api/admin/add",this.addForm).then((res)=>{
+          this.$message.success("新增"+res.data.message);
+          this.drawer=false;
+          this.getAdminList();
+        }).catch((err)=>{
+          console.log(err)
+        })
+      })
     },
     // 监听 pageSize 改变的事件
     handleSizeChange (newSize) {
@@ -171,15 +201,20 @@ export default {
       this.$confirm('确认关闭？')
           // eslint-disable-next-line no-unused-vars
           .then(_ => {
+            this.resetForm('addFormRef')
             done();
           })
           // eslint-disable-next-line no-unused-vars
           .catch(_ => {});
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
     }
 
   },
   mounted() {
     this.getAdminList()
+    this.getRoleList()
   }
 }
 </script>
