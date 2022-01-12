@@ -13,6 +13,7 @@ import Register from "@/components/Register";
 import AdminHome from "@/components/admin/AdminHome";
 import Welcome from "@/components/admin/Welcome";
 import AdminManger from "@/components/admin/AdminManger";
+import RoleManger from "@/components/admin/RoleManger";
 Vue.use(VueRouter)
 
 const routes = [
@@ -53,6 +54,9 @@ const routes = [
                 }},
             {path: "adminmanger",component: AdminManger,meta: {
                     title: "GameFaster - 系统用户管理"
+                }},
+            {path: "rolemanger",component: RoleManger,meta: {
+                    title: "GameFaster - 系统角色管理"
                 }}
         ],
         meta: {
@@ -62,6 +66,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
+  mode: 'history',
   routes
 })
 router.beforeEach((to, from, next) => {

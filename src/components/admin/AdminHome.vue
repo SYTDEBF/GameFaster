@@ -6,7 +6,8 @@
           <template slot="title"><i class="el-icon-user"></i><span>系统管理</span></template>
           <el-menu-item-group>
             <template slot="title">基本信息</template>
-            <el-menu-item index="/admin/adminmanger">系统用户基本信息管理</el-menu-item>
+            <el-menu-item index="/admin/adminmanger">系统用户信息管理</el-menu-item>
+            <el-menu-item index="/admin/rolemanger">系统角色信息管理</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
       </el-menu>
@@ -19,7 +20,7 @@
           <span>GameFaster后台系统</span>
         </div>
         <div>
-          <span style="margin-right: 5px">{{aun}}</span>
+          <span style="margin-right: 5px">{{userInfo.username}}</span>
           <el-button type="info" @click="logout" id="close" icon="el-icon-switch-button"></el-button>
         </div>
       </el-header>
@@ -39,11 +40,11 @@ export default {
     return {
       isCollapse: false,
       activePath: '',
-      aun: ''
+      userInfo: {}
     }
   },
   created () {
-    this.getUsername()
+    this.getUserInfo()
   },
   methods: {
     toggleCollapse () {
@@ -53,9 +54,10 @@ export default {
       window.sessionStorage.clear()
       this.$router.push('/')
     },
-    getUsername () {
-      this.aun = window.sessionStorage.getItem('aun')
-    }
+    async getUserInfo() {
+      const {data: res} = await this.$http.get('/api/api/admin/info')
+      this.userInfo = res.data
+    },
   }
 }
 </script>

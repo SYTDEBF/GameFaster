@@ -35,12 +35,12 @@ export default {
     return {
       loginForm: {
         account: '123@qq.com',
-        password: '123456'
+        password: '12345678'
       },
       loginFormRules: {
         account: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, max: 16, message: '长度在 3 到 16 个字符', trigger: 'blur' }
+          { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
@@ -58,8 +58,8 @@ export default {
         if (!valid) return
         const { data: res } = await this.$http.post('/api/api/login/admin', this.loginForm)
         console.log(res)
-        if (res.code === 500) {
-          return this.$message.error('用户名或密码错误')
+        if (res.flag === false) {
+          return this.$message.error(res.data)
         }
         this.$message.success('登录成功')
         window.sessionStorage.setItem('token','love')
