@@ -25,7 +25,7 @@
           <el-row>
             <el-col :span="1"> <el-tag style="margin-left: 5px" size="small">模块</el-tag></el-col>
             <el-col :span="23">
-              <el-tree :data="scope.row.moduleTreeList" :props="defaultProps" empty-text="暂无模块" @node-click="handleNodeClick">
+              <el-tree :data="scope.row.moduleTreeList" :props="defaultProps1" empty-text="暂无模块" @node-click="handleNodeClick">
               </el-tree>
             </el-col>
           </el-row>
@@ -60,13 +60,13 @@
       :direction="direction"
       custom-class="demo-drawer"
       :destroy-on-close="true"
-      @close="moduleList = [],restRoleAuthorizationObj"
+      @close="moduleList = [],restRoleAuthorizationObj()"
       :before-close="handleClose">
     <div class="demo-drawer__content">
       <el-form  label-width="20px">
         <el-form-item >
           <el-tree :data="moduleList" :props="defaultProps" style="border: 0px solid #000000;margin-right: 20px;border-radius: 2%; box-shadow: 0 0 10px #ddd;" show-checkbox
-                                node-key="id" default-expand-all :default-checked-keys="defKeys" ref="treeRef"></el-tree></el-form-item>
+                                node-key="moduleId" default-expand-all :default-checked-keys="defKeys" ref="treeRef"></el-tree></el-form-item>
         <el-form-item>
           <el-button type="primary" @click="allotRights">确 定</el-button>
           <el-button @click="drawer = false">取 消</el-button>
@@ -104,6 +104,10 @@ export default {
         moduleIdList: []
       },
       defaultProps: {
+        children: 'children',
+        label: 'name'
+      },
+      defaultProps1: {
         children: 'children',
         label: 'label'
       }

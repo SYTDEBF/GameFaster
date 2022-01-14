@@ -14,6 +14,8 @@ import AdminHome from "@/components/admin/AdminHome";
 import Welcome from "@/components/admin/Welcome";
 import AdminManger from "@/components/admin/AdminManger";
 import RoleManger from "@/components/admin/RoleManger";
+import ModuleManger from "@/components/admin/ModuleManger";
+import UserManger from "@/components/admin/UserManger";
 Vue.use(VueRouter)
 
 const routes = [
@@ -52,11 +54,17 @@ const routes = [
             {path: "welcome",component: Welcome,meta: {
                     title: "GameFaster - 后台欢迎页"
                 }},
-            {path: "adminmanger",component: AdminManger,meta: {
+            {path: "admin/manger",component: AdminManger,meta: {
                     title: "GameFaster - 系统用户管理"
                 }},
-            {path: "rolemanger",component: RoleManger,meta: {
+            {path: "role/manger",component: RoleManger,meta: {
                     title: "GameFaster - 系统角色管理"
+                }},
+            {path: "module/manger",component: ModuleManger,meta: {
+                    title: "GameFaster - 系统模块管理"
+                }},
+            {path: "user/manger",component: UserManger,meta: {
+                    title: "GameFaster - 普通用户管理"
                 }}
         ],
         meta: {

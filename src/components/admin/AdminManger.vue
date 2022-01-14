@@ -192,6 +192,7 @@ export default {
         status: "1",
       },
       editForm: {
+        adminId: '',
         account: '',
         username: '',
         password: '',

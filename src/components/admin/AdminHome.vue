@@ -6,8 +6,10 @@
           <template slot="title"><i class="el-icon-user"></i><span>系统管理</span></template>
           <el-menu-item-group>
             <template slot="title">基本信息</template>
-            <el-menu-item index="/admin/adminmanger">系统用户信息管理</el-menu-item>
-            <el-menu-item index="/admin/rolemanger">系统角色信息管理</el-menu-item>
+            <el-menu-item index="/admin/admin/manger">系统用户信息管理</el-menu-item>
+            <el-menu-item index="/admin/role/manger">系统角色信息管理</el-menu-item>
+            <el-menu-item index="/admin/module/manger">系统模块信息管理</el-menu-item>
+            <el-menu-item index="/admin/user/manger">普通用户信息管理</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
       </el-menu>
