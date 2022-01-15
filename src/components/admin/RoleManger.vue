@@ -117,7 +117,6 @@ export default {
     async getRoleList (){
       // 获取角色列表
       const { data: res } = await this.$http.post('/api/api/role/list/page',this.queryInfo)
-      console.log("roleList"+res)
       this.total = res.data.total
       this.roleList = res.data.list
     },

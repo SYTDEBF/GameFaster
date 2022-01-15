@@ -4,7 +4,7 @@ import router from './router'
 import './plugins/element.js'
 import './assets/css/global.css'
 import '@/assets/style/theme/index.css'
-
+import '@/assets/css/font-awesome.css'
 import axios from "axios";
 Vue.config.productionTip = false
 axios.interceptors.response.use(response => {
