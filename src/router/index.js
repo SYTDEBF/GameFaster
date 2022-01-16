@@ -7,15 +7,8 @@ import community from "@/components/Community";
 import news from '@/components/News'
 import NewsDetail from "@/components/NewsDetail";
 import GamesDetail from "@/components/GamesDetail";
-import Editer from "@/components/Editer";
-import Login from "@/components/Login";
 import Register from "@/components/Register";
-import AdminHome from "@/components/admin/AdminHome";
-import Welcome from "@/components/admin/Welcome";
-import AdminManger from "@/components/admin/AdminManger";
-import RoleManger from "@/components/admin/RoleManger";
-import ModuleManger from "@/components/admin/ModuleManger";
-import UserManger from "@/components/admin/UserManger";
+import UserLogin from "@/components/UserLogin";
 Vue.use(VueRouter)
 
 const routes = [
@@ -38,39 +31,14 @@ const routes = [
               }},
           {path: 'games/:gid',component: GamesDetail,meta: {
                   title: "GameFaster - 游戏详情"
-              }},
-          {path: 'edc',component: Editer,meta: {
-                  title: "GameFaster - 新闻编辑"
               }}
     ] },
-    {path: '/login',component: Login,meta: {
-            title: "GameFaster - 登录"
-        }},
     {path: '/register',component: Register,meta: {
             title: "GameFaster - 注册"
         }},
-    {path: '/admin/',component: AdminHome,redirect: '/admin/welcome',
-        children:[
-            {path: "welcome",component: Welcome,meta: {
-                    title: "GameFaster - 后台欢迎页"
-                }},
-            {path: "admin/manger",component: AdminManger,meta: {
-                    title: "GameFaster - 系统用户管理"
-                }},
-            {path: "role/manger",component: RoleManger,meta: {
-                    title: "GameFaster - 系统角色管理"
-                }},
-            {path: "module/manger",component: ModuleManger,meta: {
-                    title: "GameFaster - 系统模块管理"
-                }},
-            {path: "user/manger",component: UserManger,meta: {
-                    title: "GameFaster - 普通用户管理"
-                }}
-        ],
-        meta: {
-            title: "GameFaster - 后台管理"
+    {path: '/userLogin',component: UserLogin,meta: {
+            title: "GameFaster - 用户登录"
         }}
-
 ]
 
 const router = new VueRouter({

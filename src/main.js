@@ -14,7 +14,7 @@ axios.interceptors.response.use(response => {
   return response
 })
  function toLogin() {
-  window.location.href='/login'
+  window.location.href='/userLogin'
 }
 Vue.prototype.$http = axios
 
