@@ -43,7 +43,7 @@
       <div>
         <el-card :body-style="{ padding: '0px' }"  style="height: 280px">
           <div  class="">
-            <img src="../assets/img/asa.png" class="image">
+            <img src="../assets/img/asa.png" class="image" alt="">
           </div>
           <div style="padding: 14px;">
             <span>新闻标题</span>
@@ -66,6 +66,8 @@
     </el-col>
     <el-col :span="8"></el-col>
   </el-row>
+
+
 </div>
 </template>
 
