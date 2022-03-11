@@ -87,9 +87,9 @@ export default {
           return this.$message.error(res.data)
         }
         this.$message.success('登录成功')
-        window.sessionStorage.setItem('isLogin','yes')
+        window.localStorage.setItem('isLogin','yes')
         const { data: res1 } = await this.$http.get('/api/api/user/infos')
-        window.sessionStorage.setItem('uid',res1.data.creId)
+        window.localStorage.setItem('uid',res1.data.creId)
         await this.$router.push('/')
       })
     },

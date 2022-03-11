@@ -12,22 +12,20 @@
       </div>
     </div>
   </div>
-  <el-row>
-    <el-col :span="10" style="min-height: 36px"></el-col>
-    <el-col :span="4" >
+
+
+    <div style="margin-left: -240px">
       <el-pagination
+          background class="block"
           @current-change="handleCurrentChange"
           :current-page="queryInfo.pageNum"
-          :page-sizes="[1, 2, 5, 10, 20]"
           :page-size="queryInfo.pageSize"
-          layout="total,prev, pager, next, jumper"
+          layout="total,prev, pager, next,jumper"
           :total="total">
       </el-pagination>
-    </el-col>
-    <el-col :span="10" style="min-height: 36px"></el-col>
-  </el-row>
-</div>
+    </div>
 
+</div>
 </template>
 
 <script>
@@ -54,6 +52,7 @@ export default {
     changeDateYMD,
     handleCurrentChange(newPage) {
       this.queryInfo.pageNum = newPage
+      this.getGameList()
     },
     goDetail (gId) {
       this.$router.push('/games/' + gId)
@@ -94,7 +93,10 @@ export default {
   flex: auto;
   width: 70%;
 }
-.game_but{
+.el-pagination{
+  text-align: center;
+}
+.el-input__inner{
 
 }
 .game_info span{
@@ -131,5 +133,7 @@ export default {
     transform: translateY(5px);
   }
 }
+
+
 
 </style>

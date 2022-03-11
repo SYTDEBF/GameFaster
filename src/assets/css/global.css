@@ -6,6 +6,8 @@ html, body, #app {
  margin: 0;
  padding: 0;
  min-width: 1366px;
+ min-height: 500px;
+ background-color: #E9EEF3;
 }
 .el-breadcrumb{
     margin-bottom: 15px;

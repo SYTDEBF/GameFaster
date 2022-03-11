@@ -19,7 +19,8 @@
         <el-input
             placeholder="请输入内容"
             prefix-icon="el-icon-search"
-            v-model="keyword">
+            v-model="keyword" @change="goSearch">
+
         </el-input>
       </div>
       <div v-show="isLogin === 'yes'">
@@ -33,17 +34,19 @@
             <div style="height: 40px" @click="goUserDetail"><i class="el-icon-user" style="margin-right: 5px"></i>个人中心</div>
             <div style="height: 40px" @click="loginOut"><i class="el-icon-switch-button" style="margin-right: 5px"></i>退出登录</div>
           </div>
-        <el-avatar  slot="reference" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+        <el-avatar  slot="reference" :src="userInfo.cover"></el-avatar>
         </el-popover>
       </div>
       <div v-show="isLogin !== 'yes'">
         <el-button plain @click="goLogin">登录</el-button>
       </div>
     </el-header>
-    <el-main :style="defaultHeight">
-      <router-view></router-view>
-    </el-main>
-    <el-footer style="display: flex;justify-content: center;align-items: center;background-color: #E9EEF3;color:#82848a">©CopyRight 2017-2022 MZHSY All Rights Reserved. 梅子黄时雨 版权所有</el-footer>
+    <el-container>
+      <el-main :style="defaultHeight">
+        <router-view></router-view>
+      </el-main>
+      <el-footer style="display: flex;justify-content: center;align-items: center;background-color: #E9EEF3;color:#82848a">©CopyRight 2017-2022 MZHSY All Rights Reserved. 梅子黄时雨 版权所有</el-footer>
+    </el-container>
   </el-container>
 </template>
 
@@ -56,6 +59,7 @@ export default {
       activeIndex2: '1',
       isLogin: 'no',
       keyword: '',
+      userInfo: {},
       defaultHeight: {
         height: ""
       }
@@ -69,21 +73,34 @@ export default {
       this.$router.push({ path:'/userLogin'})
     },
     getLogin(){
-      this.isLogin = window.sessionStorage.getItem('isLogin')
+      this.isLogin = window.localStorage.getItem('isLogin')
     },
     goUserDetail(){
-      this.$router.push({ path:'/user/'+window.sessionStorage.getItem('uid')})
+      this.$router.push({ path:'/user/'+window.localStorage.getItem('uid')})
     },
     loginOut (){
-      window.sessionStorage.setItem('isLogin','no')
+      window.localStorage.setItem('isLogin','no')
       this.getLogin()
-    }
+    },
+    goSearch(){
+      if (this.keyword.trim()!=='') {
+       return  this.$router.push('/search/' + this.keyword)
+      }else {
+        return this.$message.warning('请输入内容')
+      }
+
+    },
+    async getUserInfo(){
+      const {data: res} = await this.$http.get('/api/api/user/list/one/'+window.localStorage.getItem('uid'))
+      this.userInfo = res.data
+    },
   },
   mounted() {
     //页面创建时执行一次getHeight进行赋值，顺道绑定resize事件
     window.addEventListener("resize", this.getHeight);
     this.getHeight();
     this.getLogin()
+    this.getUserInfo()
   }
 }
 </script>
@@ -100,7 +117,7 @@ export default {
 }
 .el-header div {
   margin-left: 10px;
-  margin-right: 80px;
+  margin-right: 20px;
 }
 .el-avatar{
   border: 1px #8c939d solid;
@@ -113,6 +130,7 @@ export default {
 
 .el-main {
   background-color: #E9EEF3;
+  min-height: 600px;
 
 }
 .list_box{

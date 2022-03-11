@@ -12,7 +12,7 @@
                 <div class="bgt"></div>
                 <div class="user_info_3">
                   <div style="height: 33%">
-                    <img width="100"  height="100" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" alt=""/>
+                    <img width="100"  height="100" :src="userObj.cover" alt=""/>
                   </div>
                   <div class="user_info_1">
                     <span>{{ userObj.username }}</span>
@@ -45,7 +45,7 @@
                     <el-form-item label="头像" prop="cover">
                       <div class="list-img-box">
                         <div v-if="userForm.cover !== ''">
-                          <img :src="userForm.cover" style='width:150px;height:150px' alt="自定义头像">
+                          <img :src="userForm.cover" style='width:150px;height:150px' alt="头像加载失败">
                         </div>
                         <div v-else class="upload-btn" style="height: 150px;width: 150px" @click="uploadPicture('flagImg1')">
                           <i class="el-icon-plus" style="font-size: 30px;"></i>
@@ -54,7 +54,7 @@
                       </div>
                       <div>
                         <el-button type="danger" icon="el-icon-delete" round size="mini"
-                                   @click="userForm.cover = ''"></el-button>
+                                   @click="delCover"></el-button>
                       </div>
                       <input type="hidden" v-model="userForm.cover" placeholder="请添加封面">
                     </el-form-item>
@@ -82,9 +82,9 @@
                           value-format="yyyy-MM-dd">
                       </el-date-picker>
                     </el-form-item>
-                    <el-form-item>
-                      <el-button type="primary" @click="editOne()">立即修改</el-button>
-                      <el-button @click="resetForm('userFormRef')" type="warning">重置</el-button>
+                    <el-form-item v-show="isMySelf">
+                      <el-button type="primary" plain @click="editUserInfo()">立即修改</el-button>
+                      <el-button @click="resetForm('userFormRef')" plain type="warning">重置</el-button>
                     </el-form-item>
                   </el-form>
                 </el-tab-pane>
@@ -93,17 +93,17 @@
                     <el-table-column label="编号" prop="recordId"></el-table-column>
                     <el-table-column label="上传用户" >
                       <template slot-scope="scope">
-                        <el-link type="primary" :underline="true" :href="'/newpre/'+scope.row.userId" target="_blank">{{scope.row.username}}</el-link>
+                        <el-link type="primary" :underline="true" disabled :href="'/user/'+scope.row.userId" >{{scope.row.username}}</el-link>
                       </template>
                     </el-table-column>
                     <el-table-column label="规则">
                       <template slot-scope="scope">
-                        <el-link type="primary" :underline="true" :href="'/newpre/'+scope.row.rulesId" target="_blank">{{scope.row.ruleName}}</el-link>
+                        <el-link type="primary" :underline="true" :href="'/newpre/'+scope.row.rulesId" >{{scope.row.ruleName}}</el-link>
                       </template>
                     </el-table-column>
                     <el-table-column label="平台" >
                       <template slot-scope="scope">
-                        <el-link type="primary" :underline="true" :href="'/newpre/'+scope.row.platformId" target="_blank">{{scope.row.platformName}}</el-link>
+                        <el-link type="primary" :underline="true" :href="'/platform/'+scope.row.platformId" >{{scope.row.platformName}}</el-link>
                       </template>
                     </el-table-column>
                     <el-table-column label="时长" prop="time"></el-table-column>
@@ -158,11 +158,13 @@ export default {
       cropperModel: false,
       mode: '240px,240px',
       cropperName: '',
+      isMySelf: false,
       imgName: '',
       imgVisible: false,
       frList: [],
       userObj: {},
       userForm: {
+        userId: '',
         username: '',
         email: '',
         sex: '',
@@ -188,6 +190,25 @@ export default {
     async getUserInfo (){
       const {data: res } = await this.$http.get('/api/api/user/list/one/basic/'+this.$route.params.uid)
       this.userObj = res.data
+      this.userForm.userId = res.data.userId
+      this.userForm.cover = res.data.cover
+      this.userForm.email = res.data.email
+      this.userForm.mobile = res.data.mobile
+      this.userForm.createTime = res.data.createTime
+      this.userForm.sex = res.data.sex
+      this.userForm.username = res.data.username
+    },
+    async editUserInfo () {
+      this.userForm.userId = this.userObj.userId
+      const {data: res } = await this.$http.put('/api/api/user/edit/user',this.userForm)
+      if (res.flag){
+        await this.getUserInfo()
+        return this.$message.success('修改成功')
+      }
+      return this.$message.error('修改失败'+','+res.data)
+    },
+    delCover(){
+      this.userForm.cover = ''
     },
     // 监听 pageSize 改变的事件
     handleSizeChange(newSize) {
@@ -199,6 +220,12 @@ export default {
     },
     toEmail(email){
       window.location.href = 'mailto: '+email
+    },
+    async isMySelfF(){
+      const {data: res } = await this.$http.get('/api/api/user/infos')
+      if (Number(this.$route.params.uid )=== res.data.creId){
+        this.isMySelf = true
+      }
     },
     handleUploadSuccess(data) {
       console.log(data)
@@ -217,6 +244,7 @@ export default {
   mounted() {
     this.getFRList()
     this.getUserInfo()
+    this.isMySelfF()
   }
 
 }

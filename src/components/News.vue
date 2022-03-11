@@ -19,20 +19,19 @@
     </el-col>
     <el-col :span="2" style="min-height: 36px"></el-col>
   </el-row>
-  <el-row>
-    <el-col :span="10" style="min-height: 36px"></el-col>
-    <el-col :span="4" >
-      <el-pagination
-          @current-change="handleCurrentChange"
-          :current-page="queryInfo.pageNum"
-          :page-sizes="[1, 2, 5, 10, 20]"
-          :page-size="queryInfo.pageSize"
-          layout="total,prev, pager, next, jumper"
-          :total="total">
-      </el-pagination>
-    </el-col>
-    <el-col :span="10" style="min-height: 36px"></el-col>
-  </el-row>
+      <div style="margin-left: -240px">
+        <el-pagination
+            background
+            @current-change="handleCurrentChange"
+            :current-page="queryInfo.pageNum"
+            :page-sizes="[1, 2, 5, 10, 20]"
+            :page-size="queryInfo.pageSize"
+            layout="total,prev, pager, next, jumper"
+            :total="total">
+        </el-pagination>
+      </div>
+
+
 
 </div>
 </template>
@@ -101,6 +100,9 @@ export default {
 .news_box h2:hover{
   color: #409EFF;
   cursor: pointer;
+}
+.el-pagination{
+  text-align: center;
 }
 .news_box *{
   margin-left: 10px;

@@ -7,6 +7,7 @@
         <div class="wbox">
           <div class="wbox_left">
             <img :src="gameObj.cover" alt="" class="xk">
+            <el-button type="primary" @click="goFRSub" plain style="margin-top: 10px;width: 100%;font-weight: bold;font-size: 18px;letter-spacing: 8px">提交速通</el-button>
           </div>
           <div class="wbox_right">
              <span class="game_name" style="margin-left: 5px">
@@ -30,7 +31,7 @@
             </span>
             </div>
             <div class="game_other" style="margin-left: 5px;margin-top: 10px">
-              平台：<el-tag v-for="pla in gameObj.platformList" :key="pla.id">{{ pla.name }}</el-tag>
+              平台：<el-tag v-for="pla in gameObj.platformList" :key="pla.platformId">{{ pla.name }}</el-tag>
             </div>
             <span class="game_other" style="margin-left: 5px;margin-top: 10px">
               简介：{{ gameObj.desc }}
@@ -45,17 +46,17 @@
                 <el-table-column label="编号" prop="recordId"></el-table-column>
                 <el-table-column label="上传用户" >
                   <template slot-scope="scope">
-                    <el-link type="primary" :underline="true" :href="'/newpre/'+scope.row.userId" target="_blank">{{scope.row.username}}</el-link>
+                    <el-link type="primary" :underline="true" :href="'/user/'+scope.row.userId" >{{scope.row.username}}</el-link>
                   </template>
                 </el-table-column>
                 <el-table-column label="规则">
                   <template slot-scope="scope">
-                    <el-link type="primary" :underline="true" :href="'/newpre/'+scope.row.rulesId" target="_blank">{{scope.row.ruleName}}</el-link>
+                    <el-link type="primary" :underline="true" :href="'/game/'+scope.row.gameId+'/rule/'+rule.rulesId" >{{scope.row.ruleName}}</el-link>
                   </template>
                 </el-table-column>
                 <el-table-column label="平台" >
                   <template slot-scope="scope">
-                    <el-link type="primary" :underline="true" :href="'/newpre/'+scope.row.platformId" target="_blank">{{scope.row.platformName}}</el-link>
+                    <el-link type="primary" :underline="true" :href="'/platform/'+scope.row.platformId" >{{scope.row.platformName}}</el-link>
                   </template>
                 </el-table-column>
                 <el-table-column label="时长" prop="time"></el-table-column>
@@ -82,6 +83,7 @@ export default {
   data(){
     return{
       gameObj: {},
+      userObj: {},
       fastRecordList: [],
       queryInfo: {
         pageNum: 1,
@@ -103,11 +105,18 @@ export default {
       const {data: res} = await this.$http.post('/api/api/games/list/'+ this.$route.params.gid +'/'+ this.rulesId ,this.queryInfo)
       this.fastRecordList = res.data.list
     },
+    async getUserInfo (){
+      const {data: res } = await this.$http.get('/api/api/user/list/one/basic/'+window.localStorage.getItem('uid'))
+      this.userObj = res.data
+    },
     handleClick() {
       this.getGameFastRecordList()
     },
     goFRDetail(recordId){
       this.$router.push('/record/' + recordId)
+    },
+    goFRSub(){
+      this.$router.push('/gamefaster/sub/' + this.$route.params.gid)
     },
     changeDateYMD
   },

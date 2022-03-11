@@ -3,7 +3,7 @@
   <el-row :gutter="20" >
     <el-col :span="16" >
       <div>
-      <el-card style="height: 280px">
+      <el-card style="height: 300px">
         <div slot="header" class="">
           <span style="font-weight: bold;font-size: 16px">开始了解</span>
           <el-button style="float: right; padding: 3px 0" type="text" icon="el-icon-circle-close"></el-button>
@@ -41,11 +41,11 @@
     </el-col>
     <el-col :span="8">
       <div>
-        <el-card :body-style="{ padding: '0px' }"  style="height: 280px">
+        <el-card :body-style="{ padding: '0px' }"  style="height: 300px">
           <div  class="">
             <img src="../assets/img/asa.png" class="image" alt="">
           </div>
-          <div style="padding: 14px;">
+          <div style="padding: 30px;">
             <span>新闻标题</span>
             <div class="bottom clearfix">
               <time class="time">{{ new Date() }}</time>
