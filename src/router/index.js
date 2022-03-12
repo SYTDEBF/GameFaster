@@ -12,6 +12,7 @@ import GameFasterSub from "@/components/GameFasterSub";
 import PlaDetail from "@/components/PlaDetail";
 import RuleDetail from "@/components/RuleDetail";
 import SearchRes from "@/components/SearchRes";
+import Page404 from "@/components/Page404";
 Vue.use(VueRouter)
 
 const routes = [
@@ -46,12 +47,16 @@ const routes = [
               }},
           {path: 'search/:keyword',component: SearchRes,meta: {
                   title: "GameFaster - 搜索结果"
+              }},
+          {path: '/404',component: Page404,meta: {
+                  title: "GameFaster - 无法找到页面"
               }}
 
     ] },
     {path: '/userLogin',component: Login,meta: {
             title: "GameFaster - 用户登录"
-        }}
+        }},
+
 ]
 
 const router = new VueRouter({

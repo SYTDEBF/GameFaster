@@ -61,10 +61,79 @@
       <el-card>
         <h4>最新速通</h4>
         <el-divider></el-divider>
-        <el-link ><router-link to="/login">后台管理</router-link></el-link>
+        <el-table stripe :data="frList">
+          <el-table-column label="编号" prop="recordId"></el-table-column>
+          <el-table-column label="游戏名称" >
+            <template slot-scope="scope">
+              <el-link type="primary" :underline="true"  :href="'/games/'+scope.row.gameId" >{{scope.row.gameName}}</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column label="上传用户" >
+            <template slot-scope="scope">
+              <el-link type="primary" :underline="true"  :href="'/user/'+scope.row.userId" >{{scope.row.username}}</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column label="规则">
+            <template slot-scope="scope">
+              <el-link type="primary" :underline="true" :href="'/game/'+scope.row.gameId+'/rule/'+scope.row.ruleId" >{{scope.row.ruleName}}</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column label="平台" >
+            <template slot-scope="scope">
+              <el-link type="primary" :underline="true" :href="'/platform/'+scope.row.platformId" >{{scope.row.platformName}}</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column label="时长" prop="time"></el-table-column>
+          <el-table-column label="详情">
+            <template slot-scope="scope">
+              <el-button @click="goFRDetail(scope.row.recordId)" type="text" class="bu" style="margin-left: -35px" width="100">查看</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
       </el-card>
     </el-col>
-    <el-col :span="8"></el-col>
+    <el-col :span="8">
+      <el-card>
+        <h4>活跃用户</h4>
+        <el-divider></el-divider>
+        <div class="rank_box">
+          <div class="rank_box_top">
+            <div class="sec" style="margin-top: 50px">
+              <div>
+                <img src="../assets/icons/亚军.svg" style="width: 50px;height: 50px;margin-left: -55px" alt="a" class="mb-2">
+                <img :src="rankUserList[1].cover" style="width: 100px;height: 100px" alt="a" class="img_border">
+                <el-tag style="margin-top: 5px">{{ rankUserList[1].record }}条</el-tag>
+              </div>
+            </div>
+            <div class="fri">
+              <div>
+                <img src="../assets/icons/冠军.svg" style="width: 50px;height: 50px;margin-left: -55px" alt="a" class="mb-2">
+                <img :src="rankUserList[0].cover" style="width: 100px;height: 100px;" alt="a" class="img_border">
+                <el-tag style="margin-top: 5px">{{ rankUserList[0].record }}条</el-tag>
+              </div>
+            </div>
+            <div class="thi" style="margin-top: 50px">
+              <div>
+                <img src="../assets/icons/季军.svg" style="width: 50px;height: 50px;margin-left: -55px" alt="a" class="mb-2">
+                <img :src="rankUserList[2].cover" style="width: 100px;height: 100px" alt="a" class="img_border">
+                <el-tag style="margin-top: 5px">{{ rankUserList[2].record }}条</el-tag>
+              </div>
+            </div>
+          </div>
+          <div class="rank_box_bom">
+            <div v-for="(rank,index) in rankUserList" :key="index" style="width: 100%">
+              <div v-if="index>2" style="display: flex;flex-direction: row;align-items: center;border: 1px #d0c8c8 solid;border-radius: 3px;width: 100%%;padding: 10px">
+                <div>{{index +1 }}</div>
+                <div><img :src="rank.cover" alt="" style="width: 50px;height: 50px"></div>
+                <div>{{ rank.username }}</div>
+                <div> {{ rank.record }}</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </el-card>
+    </el-col>
   </el-row>
 
 
@@ -74,10 +143,35 @@
 <script>
 export default {
   name: "Ad",
+  data (){
+    return {
+      frList: [],
+      rankUserList: [],
+      queryInfo: {
+        // 当前的页数
+        pageNum: 1,
+        // 当前每页显示多少条数据
+        pageSize: 10,
+        keyword: ""
+      }
+    }
+  },
   methods : {
     asd(){
       this.$router.push({ path:'/news/1'})
+    },
+    async getFRList(){
+      const {data: res } = await this.$http.get('/api/api/fastRecord/list/last/')
+      this.frList = res.data
+    },
+    async getUserRank(){
+      const {data: res } = await this.$http.get('/api/api/index/rank/user')
+      this.rankUserList = res.data
     }
+  },
+  mounted() {
+    this.getFRList()
+    this.getUserRank()
   }
 }
 </script>
@@ -92,15 +186,58 @@ export default {
  .font-size-md{
    font-size: 16px;
  }
- .news-div{
+.rank_box{
+  display: flex;
+  flex-direction: column;
+  margin-top: -15px;
+
+}
+.rank_box_top{
+  display: flex;
+  flex-direction: row;
+}
+.fri{
+  width: 33.3%;
+  display: flex;
+  justify-content: center;
+}
+ .fri div{
    display: flex;
-   color: #E9EEF3;
-   background-color: grey;
-   width: 100%;
-   height: 170px;
-   margin-top: 10px;
+   flex-direction: column;
    align-items: center;
+ }
+ .mb-2{
+   margin-bottom: -15px;
+ }
+ .sec{
+   width: 33.3%;
+   display: flex;
    justify-content: center;
+ }
+ .sec div{
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+ }
+
+ .thi{
+   width: 33.3%;
+   display: flex;
+   justify-content: center;
+ }
+ .thi div{
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+ }
+ .rank_box_bom{
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+ }
+ .img_border{
+   border: 3px #409EFF solid;
+   border-radius: 50%;
  }
  .time {
    font-size: 13px;
@@ -120,6 +257,5 @@ export default {
  .image {
    width: 100%;
    height: 190px;
-
  }
 </style>

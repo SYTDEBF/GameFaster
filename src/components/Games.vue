@@ -93,6 +93,14 @@ export default {
   flex: auto;
   width: 70%;
 }
+.game_info{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: auto;
+  width: 70%;
+}
 .el-pagination{
   text-align: center;
 }
