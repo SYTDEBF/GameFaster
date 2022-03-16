@@ -103,6 +103,7 @@
                 <img src="../assets/icons/亚军.svg" style="width: 50px;height: 50px;margin-left: -55px" alt="a" class="mb-2">
                 <img :src="rankUserList[1].cover" style="width: 100px;height: 100px" alt="a" class="img_border">
                 <el-tag style="margin-top: 5px">{{ rankUserList[1].record }}条</el-tag>
+                <span style="font-size: 16px;font-weight:bold;margin-top: 5px" class="username" @click="goUserDe(rankUserList[1].userId)">{{ rankUserList[1].username }}</span>
               </div>
             </div>
             <div class="fri">
@@ -110,6 +111,7 @@
                 <img src="../assets/icons/冠军.svg" style="width: 50px;height: 50px;margin-left: -55px" alt="a" class="mb-2">
                 <img :src="rankUserList[0].cover" style="width: 100px;height: 100px;" alt="a" class="img_border">
                 <el-tag style="margin-top: 5px">{{ rankUserList[0].record }}条</el-tag>
+                <span style="font-size: 16px;font-weight:bold;margin-top: 5px" class="username" @click="goUserDe(rankUserList[0].userId)">{{ rankUserList[0].username }}</span>
               </div>
             </div>
             <div class="thi" style="margin-top: 50px">
@@ -117,16 +119,17 @@
                 <img src="../assets/icons/季军.svg" style="width: 50px;height: 50px;margin-left: -55px" alt="a" class="mb-2">
                 <img :src="rankUserList[2].cover" style="width: 100px;height: 100px" alt="a" class="img_border">
                 <el-tag style="margin-top: 5px">{{ rankUserList[2].record }}条</el-tag>
+                <span style="font-size: 16px;font-weight:bold;margin-top: 5px" class="username" @click="goUserDe(rankUserList[2].userId)">{{ rankUserList[2].username }}</span>
               </div>
             </div>
           </div>
           <div class="rank_box_bom">
-            <div v-for="(rank,index) in rankUserList" :key="index" style="width: 100%">
-              <div v-if="index>2" style="display: flex;flex-direction: row;align-items: center;border: 1px #d0c8c8 solid;border-radius: 3px;width: 100%%;padding: 10px">
-                <div>{{index +1 }}</div>
-                <div><img :src="rank.cover" alt="" style="width: 50px;height: 50px"></div>
-                <div>{{ rank.username }}</div>
-                <div> {{ rank.record }}</div>
+            <div v-for="(rank,index) in rankUserList" :key="index" style="width: 100%;margin-top: 5px">
+              <div v-if="index>2"  class="other_box">
+                <div style="font-size: 20px;font-style: italic">{{index +1 }}</div>
+                <div style="margin-left: 10px"><img :src="rank.cover" alt="" style="width: 50px;height: 50px"></div>
+                <div style="margin-left: 10px;font-weight: bold" class="username" @click="goUserDe(rank.userId)">{{ rank.username }}</div>
+                <el-tag style="margin-left: 10px"> {{ rank.record }}条</el-tag>
               </div>
 
             </div>
@@ -167,6 +170,9 @@ export default {
     async getUserRank(){
       const {data: res } = await this.$http.get('/api/api/index/rank/user')
       this.rankUserList = res.data
+    },
+    goUserDe (userId){
+      this.$router.push('/user/'+userId)
     }
   },
   mounted() {
@@ -183,6 +189,12 @@ export default {
    align-items: center;
    justify-content: center;
  }
+ .username{
+   cursor: pointer;
+ }
+ .username:hover{
+   color: #409EFF;
+ }
  .font-size-md{
    font-size: 16px;
  }
@@ -195,6 +207,17 @@ export default {
 .rank_box_top{
   display: flex;
   flex-direction: row;
+}
+.other_box{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 1px #d0c8c8 solid;
+  border-radius: 3px;
+  width: 100%;
+  padding-left: 30px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 .fri{
   width: 33.3%;
@@ -234,6 +257,7 @@ export default {
    display: flex;
    flex-direction: column;
    align-items: center;
+   margin-top: 10px;
  }
  .img_border{
    border: 3px #409EFF solid;

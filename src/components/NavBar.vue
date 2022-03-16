@@ -79,7 +79,8 @@ export default {
       this.$router.push({ path:'/user/'+window.localStorage.getItem('uid')})
     },
     loginOut (){
-      window.localStorage.setItem('isLogin','no')
+
+      window.localStorage.clear()
       this.getLogin()
     },
     goSearch(){

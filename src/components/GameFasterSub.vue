@@ -128,6 +128,27 @@ export default {
             picker.$emit('pick', date);
           }
         }]
+      },
+      addFormRules: {
+        account: [
+          {required: true, message: '请输入账户', trigger: 'blur'}
+        ],
+        password: [
+          {required: true, message: '请输入密码', trigger: 'blur'},
+          {max: 16, min: 8, message: "长度在8~16个字符之间", trigger: 'blur'}
+        ],
+        username: [
+          {required: true, message: '请输入用户名', trigger: 'blur'}
+        ],
+        email: [
+          {required: true, message: '请输入邮箱', trigger: 'blur'}
+        ],
+        roleList: [
+          {required: true, message: '请选择角色', trigger: 'change'}
+        ],
+        mobile: [
+          {require: false}
+        ]
       }
     }
   },
