@@ -78,10 +78,10 @@ export default {
     goUserDetail(){
       this.$router.push({ path:'/user/'+window.localStorage.getItem('uid')})
     },
-    loginOut (){
-
+    async loginOut (){
       window.localStorage.clear()
-      this.getLogin()
+      const {data: res} = await this.$http.post('/api/api/logout')
+      console.log(res)
     },
     goSearch(){
       if (this.keyword.trim()!=='') {

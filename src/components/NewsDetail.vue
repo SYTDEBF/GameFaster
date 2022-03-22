@@ -31,7 +31,7 @@
         </el-row>
         <el-tabs v-model="activeName" style="margin-top: 10px">
           <el-tab-pane label="按热度排序" name="first">
-            <div  style="margin-top: 10px" v-for="(comment,index) in newObj.commentVoList" :key="comment.commentId">
+            <div  style="margin-top: 10px" v-for="(comment,index) in newObj.commentVoList" :key="index+'com'">
               <el-col :span="24" style="display: flex;align-items: center">
                 <img style="object-fit: contain;width: 60px;height: 60px;border-radius: 50%;border: #8c939d 2px solid" :src="comment.cover"  alt="">
                 <div style="display: flex;flex-direction: column;margin-left: 10px">
@@ -39,7 +39,7 @@
                   <span style="margin-top: 10px">{{ comment.content }}</span>
                   <div style="display: flex;align-items: center;margin-top: 10px">
                     <span style="font-size: 10px;color: #8c939d;">{{ changeDateFrom(comment.ctime) }}</span>
-                    <el-button style="margin-left: 5px;" icon="el-icon-thumb"  size="mini" round>12</el-button>
+                    <el-button style="margin-left: 5px;" icon="el-icon-thumb"  size="mini" round @click="sendCommentUpvote(comment.commentId)">{{comment.upvoteNum}}</el-button>
                     <el-button style="margin-left: 5px;width: 5px"  size="mini" round @click="openReply(comment)">回复</el-button>
                     <span style="font-size: 10px;color: #8c939d;margin-left: 5px">{{ '#'+  Number(index+1) +'楼' }}</span>
                   </div>
@@ -47,7 +47,7 @@
               </el-col>
               <div
                   v-show="comment.replyVoList.length !==0||comment.replyVoList!== null"
-                  v-for="reply in comment.replyVoList" :key="reply.replyId" style="margin-left: 70px"
+                  v-for="reply in comment.replyVoList" :key="reply.replyId+'re'" style="margin-left: 70px"
               >
                 <el-col :span="4" ></el-col>
                 <el-col :span="20" style="display: flex;align-items: center">
@@ -57,7 +57,8 @@
                     <span style="margin-top: 10px">{{ reply.content }}</span>
                     <div style="display: flex;align-items: center;margin-top: 10px">
                       <span style="font-size: 10px;color: #8c939d;">{{ changeDateFrom(reply.ctime) }}</span>
-                      <el-button style="margin-left: 5px;" icon="el-icon-thumb"  size="mini" round>12</el-button>
+                      <el-button style="margin-left: 5px;" icon="el-icon-thumb"  size="mini" round @click="sendReplyUpvote(reply.replyId)">
+                        {{ reply.upvoteNum }}</el-button>
                     </div>
                   </div>
                 </el-col>
@@ -75,7 +76,7 @@
       :visible.sync="dialogVisible"
       width="40%"
       >
-    <el-input type="textarea" v-model="replyObj.content"></el-input>
+    <el-input type="textarea" v-model="replyObj.content" rows="5"></el-input>
     <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
     <el-button type="primary" @click="sendReply">确 定</el-button>
@@ -85,10 +86,11 @@
 </template>
 
 <script>
-import { createEditor } from '@wangeditor/editor'
+import {createEditor} from '@wangeditor/editor'
 import {changeDateFrom} from "@/assets/js/util";
 
 import '../assets/js/util.js'
+
 export default {
   name: "NewSDetail",
   data() {
@@ -115,6 +117,13 @@ export default {
         commentId: '0',
         content: '',
         ctime: ''
+      },
+      upvoteObj:{
+        upvoteId: 0,
+        commentId: 0,
+        replyId: 0,
+        userId: 0,
+        time: new Date()
       },
       content: '',
       isLogin: 'no',
@@ -145,6 +154,9 @@ export default {
     async sendCommentFirst(){
       this.commentObj.content = this.content
       this.commentObj.newsId = this.$route.params.nid
+      if (this.commentObj.content.trim()===null||this.commentObj.content.trim()===''){
+        return this.$message.warning("请输入内容")
+      }
       const {data: res} = await this.$http.post('/api/api/comment/send',this.commentObj)
       if (res.flag) {
         await this.getNewById()
@@ -152,19 +164,88 @@ export default {
       }
       return this.$message.error('发表失败')
     },
+    async sendCommentUpvote (commentId){
+      const {data: res1} = await this.$http.get('/api/api/upvote/is/'+commentId)
+      // 没点赞
+      if (!res1.flag) {
+        // 执行点赞
+      this.upvoteObj.commentId = commentId
+      this.upvoteObj.newsId = this.$route.params.nid
+      const {data: res} = await this.$http.post('/api/api/upvote/comment/send',this.upvoteObj)
+      if (res.flag) {
+        await this.getNewById()
+        this.restUpObj()
+        return this.$message.success('点赞成功')
+      }
+      this.restUpObj()
+      return this.$message.error('点赞失败')
+      }else {
+        // 取消点赞
+        const {data: res2} = await this.$http.delete('/api/api/upvote/cancel/'+commentId)
+        if (res2.flag) {
+          await this.getNewById()
+          return this.$message.success('你以取消点赞')
+        }
+
+        return this.$message.error('取消点赞失败')
+      }
+    },
+    async sendReplyUpvote(replyId){
+      const {data: res1} = await this.$http.get('/api/api/upvote/reply/is/'+replyId)
+      // 没点赞
+      if (!res1.flag) {
+        // 执行点赞
+        this.upvoteObj.replyId = replyId
+        this.upvoteObj.newsId = this.$route.params.nid
+        const {data: res} = await this.$http.post('/api/api/upvote/reply/send',this.upvoteObj)
+        if (res.flag) {
+          await this.getNewById()
+          this.restUpObj()
+          return this.$message.success('点赞成功')
+        }
+        this.restUpObj()
+        return this.$message.error('点赞失败')
+      }else {
+        // 取消点赞
+        const {data: res2} = await this.$http.delete('/api/api/upvote/cancel/reply/'+replyId)
+        if (res2.flag) {
+          await this.getNewById()
+          return this.$message.success('你以取消点赞')
+        }
+
+        return this.$message.error('取消点赞失败')
+      }
+    },
     //
     async sendReply(){
       this.replyObj.commentId = this.commentId
+      if (this.replyObj.content.trim()===null||this.replyObj.content.trim()===''){
+        return this.$message.warning("请输入内容")
+      }
       const {data: res} = await this.$http.post('/api/api/reply/send',this.replyObj)
       if (res.flag) {
         await this.getNewById()
         this.dialogVisible = false
         await this.getNewById()
-        this.replyObj.content = ''
-        this.replyObj.commentId = ''
-        return this.$message.success('发表成功')
+        this.restUpObj()
+        return this.$message.success('发布成功')
       }
-      return this.$message.error('发表失败')
+      this.restUpObj()
+      return this.$message.error('发布失败')
+    },
+    // getUpvoteNumByCommentId(commentId){
+    //   console.log(commentId)
+    //  this.$http.get('/api/api/upvote/upNum/'+commentId).then(res =>{
+    //    return res.data.data
+    //  }).catch()
+    //
+    // },
+    restUpObj(){
+      this.upvoteObj.userId = ''
+      this.upvoteObj.replyId = ''
+      this.upvoteObj.commentId = ''
+      this.upvoteObj.upvoteId = ''
+      this.upvoteObj.time = new Date()
     }
   },
   mounted() {
