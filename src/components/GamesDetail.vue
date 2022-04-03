@@ -24,7 +24,8 @@
               制造商：{{ gameObj.company }}
             </span>
             <span class="game_other">
-              类型：{{ gameObj.category }}
+              类型：<el-tag v-for="type in gameObj.typeList" :key="type.typeId"
+                         type="info">{{ type.nameEn + '（' + type.name + '）' }}</el-tag>
             </span>
             <span class="game_other">
               国家：{{ gameObj.country }}
@@ -51,18 +52,33 @@
                 </el-table-column>
                 <el-table-column label="规则">
                   <template slot-scope="scope">
-                    <el-link type="primary" :underline="true" :href="'/game/'+scope.row.gameId+'/rule/'+rule.rulesId" >{{scope.row.ruleName}}</el-link>
+                    <el-link type="primary" :underline="true" :href="'/game/'+scope.row.gameId+'/rule/'+rule.rulesId">
+                      {{ scope.row.ruleName }}
+                    </el-link>
                   </template>
                 </el-table-column>
-                <el-table-column label="平台" >
+                <el-table-column label="平台">
                   <template slot-scope="scope">
-                    <el-link type="primary" :underline="true" :href="'/platform/'+scope.row.platformId" >{{scope.row.platformName}}</el-link>
+                    <el-link type="primary" :underline="true" :href="'/platform/'+scope.row.platformId">
+                      {{ scope.row.platformName }}
+                    </el-link>
                   </template>
                 </el-table-column>
-                <el-table-column label="时长" prop="time"></el-table-column>
-                <el-table-column label="详情">
+                <el-table-column label="时长">
                   <template slot-scope="scope">
-                    <el-button @click="goFRDetail(scope.row.recordId)" type="text" class="bu" style="margin-left: -35px" width="100">查看</el-button>
+                    {{ changeFRTime(scope.row.time) }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="上传时间" width="150">
+                  <template slot-scope="scope">
+                    {{ (changeDateFrom(scope.row.date)) }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="链接">
+                  <template slot-scope="scope">
+                    <el-link :href="scope.row.video" :underline="true" type="primary"><i class="fa fa-video-camera"
+                                                                                         style="font-size: 20px"></i>
+                    </el-link>
                   </template>
                 </el-table-column>
               </el-table>
@@ -77,11 +93,12 @@
 </template>
 
 <script>
-import {changeDateYMD} from '@/assets/js/util'
+import {changeDateFrom, changeDateYMD, changeFRTime} from '@/assets/js/util'
+
 export default {
   name: "GamesDetail",
-  data(){
-    return{
+  data() {
+    return {
       gameObj: {},
       userObj: {},
       fastRecordList: [],
@@ -112,13 +129,15 @@ export default {
     handleClick() {
       this.getGameFastRecordList()
     },
-    goFRDetail(recordId){
+    goFRDetail(recordId) {
       this.$router.push('/record/' + recordId)
     },
-    goFRSub(){
+    goFRSub() {
       this.$router.push('/gamefaster/sub/' + this.$route.params.gid)
     },
-    changeDateYMD
+    changeDateYMD,
+    changeFRTime,
+    changeDateFrom
   },
   mounted() {
     this.getGame()

@@ -38,6 +38,7 @@
 
 <script>
 import {changeDateYMD} from '@/assets/js/util'
+
 export default {
   name: "News",
   data() {
@@ -55,7 +56,7 @@ export default {
   },
   methods: {
     async getNewList() {
-      const {data: res} = await this.$http.post('/api/api/news/list/page', this.queryInfo)
+      const {data: res} = await this.$http.post('/api/api/news/list/page/user', this.queryInfo)
       this.newsList = res.data.list
       this.total = res.data.total
 

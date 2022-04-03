@@ -52,7 +52,7 @@
                           <span>修改头像</span>
                         </div>
                       </div>
-                      <div>
+                      <div v-if="isMySelf">
                         <el-button type="danger" icon="el-icon-delete" round size="mini"
                                    @click="delCover"></el-button>
                       </div>
@@ -88,28 +88,59 @@
                     </el-form-item>
                   </el-form>
                 </el-tab-pane>
-                <el-tab-pane label="速通信息" name="second">
+                <el-tab-pane label="速通信息" name="second" style="width: 110%;height: 100%">
                   <el-table stripe :data="frList">
                     <el-table-column label="编号" prop="recordId"></el-table-column>
-                    <el-table-column label="上传用户" >
+                    <el-table-column label="上传用户">
                       <template slot-scope="scope">
-                        <el-link type="primary" :underline="true" disabled :href="'/user/'+scope.row.userId" >{{scope.row.username}}</el-link>
+                        <el-link type="primary" :underline="true" disabled :href="'/user/'+scope.row.userId">
+                          {{ scope.row.username }}
+                        </el-link>
                       </template>
                     </el-table-column>
                     <el-table-column label="规则">
                       <template slot-scope="scope">
-                        <el-link type="primary" :underline="true" :href="'/newpre/'+scope.row.rulesId" >{{scope.row.ruleName}}</el-link>
+                        <el-link type="primary" :underline="true" :href="'/newpre/'+scope.row.rulesId">
+                          {{ scope.row.ruleName }}
+                        </el-link>
                       </template>
                     </el-table-column>
-                    <el-table-column label="平台" >
+                    <el-table-column label="平台">
                       <template slot-scope="scope">
-                        <el-link type="primary" :underline="true" :href="'/platform/'+scope.row.platformId" >{{scope.row.platformName}}</el-link>
+                        <el-link type="primary" :underline="true" :href="'/platform/'+scope.row.platformId">
+                          {{ scope.row.platformName }}
+                        </el-link>
                       </template>
                     </el-table-column>
-                    <el-table-column label="时长" prop="time"></el-table-column>
-                    <el-table-column label="详情">
+                    <el-table-column label="时长" width="150">
                       <template slot-scope="scope">
-                        <el-button @click="goFRDetail(scope.row.recordId)" type="text" class="bu" style="margin-left: -35px" width="100">查看</el-button>
+                        {{ changeFRTime(scope.row.time) }}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="审核状态">
+                      <template slot-scope="scope">
+                        <el-tag
+                            :type="scope.row.verified === 1 ? 'success' : 'danger'"
+                            disable-transitions>{{ scope.row.verified === 1 ? '通过' : '未通过' }}
+                        </el-tag>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="上传时间" width="150">
+                      <template slot-scope="scope">
+                        {{ (changeDateFrom(scope.row.date)) }}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="链接">
+                      <template slot-scope="scope">
+                        <el-link :href="scope.row.video" :underline="true" type="primary"><i class="fa fa-video-camera"
+                                                                                             style="font-size: 20px"></i>
+                        </el-link>
+                      </template>
+                    </el-table-column>
+                    <el-table-column fixed="right" label="编辑" width="200">
+                      <template slot-scope="scope">
+                        <el-button icon="el-icon-edit" plain round size="mini" type="primary"
+                                   @click="handleEdit(scope.row)"></el-button>
                       </template>
                     </el-table-column>
                   </el-table>
@@ -148,9 +179,11 @@
 
 <script>
 import ElDiaCopper from "@/components/el-dia-copper";
+import {changeDateFrom, changeFRTime} from "@/assets/js/util";
+
 export default {
   name: "UserDetail",
-  components: { ElDiaCopper },
+  components: {ElDiaCopper},
   data() {
     return {
       total: 0,
@@ -182,13 +215,15 @@ export default {
     }
   },
   methods: {
-    async getFRList(){
-      const {data: res } = await this.$http.post('/api/api/fastRecord/list/page/'+this.$route.params.uid,this.queryInfo)
+    async getFRList() {
+      const {data: res} = await this.$http.post('/api/api/fastRecord/list/page/' + this.$route.params.uid, this.queryInfo)
       this.frList = res.data.list
       this.total = res.data.total
     },
-    async getUserInfo (){
-      const {data: res } = await this.$http.get('/api/api/user/list/one/basic/'+this.$route.params.uid)
+    changeDateFrom,
+    changeFRTime,
+    async getUserInfo() {
+      const {data: res} = await this.$http.get('/api/api/user/list/one/basic/' + this.$route.params.uid)
       this.userObj = res.data
       this.userForm.userId = res.data.userId
       this.userForm.cover = res.data.cover
@@ -218,12 +253,15 @@ export default {
       this.cropperName = name;
       this.cropperModel = true;
     },
-    toEmail(email){
-      window.location.href = 'mailto: '+email
+    toEmail(email) {
+      window.location.href = 'mailto: ' + email
     },
-    async isMySelfF(){
-      const {data: res } = await this.$http.get('/api/api/user/infos')
-      if (Number(this.$route.params.uid )=== res.data.creId){
+    handleEdit(row) {
+      this.$router.push('/gamefaster/edit/' + row.recordId)
+    },
+    async isMySelfF() {
+      const {data: res} = await this.$http.get('/api/api/user/infos')
+      if (Number(this.$route.params.uid) === res.data.creId) {
         this.isMySelf = true
       }
     },

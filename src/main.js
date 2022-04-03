@@ -5,13 +5,18 @@ import './plugins/element.js'
 import './assets/css/global.css'
 import '@/assets/style/theme/index.css'
 import '@/assets/css/font-awesome.css'
-import VueCropper   from 'vue-cropper'
+import VueCropper from 'vue-cropper'
 import axios from "axios";
+import ElementUI from "element-ui";
+
 Vue.config.productionTip = false
 Vue.use(VueCropper)
 axios.interceptors.response.use(response => {
-  if (response.data.data === '用户未登陆'){
+  if (response.data.data === '用户未登陆') {
     toLogin()
+  }
+  if (response.data.data === '没有权限') {
+    return ElementUI.Message.warning('没有权限')
   }
   return response
 })

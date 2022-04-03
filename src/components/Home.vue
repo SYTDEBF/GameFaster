@@ -46,10 +46,10 @@
             <img src="../assets/img/asa.png" class="image" alt="">
           </div>
           <div style="padding: 30px;">
-            <span>新闻标题</span>
+            <span>{{ newObj.title }}</span>
             <div class="bottom clearfix">
-              <time class="time">{{ new Date() }}</time>
-              <el-button type="text" class="button"  @click="asd">查看</el-button>
+              <time class="time">{{ changeDateFrom(newObj.date) }}</time>
+              <el-button class="button" type="text" @click="asd(newObj.newsId)">查看</el-button>
             </div>
           </div>
         </el-card>
@@ -75,18 +75,33 @@
           </el-table-column>
           <el-table-column label="规则">
             <template slot-scope="scope">
-              <el-link type="primary" :underline="true" :href="'/game/'+scope.row.gameId+'/rule/'+scope.row.ruleId" >{{scope.row.ruleName}}</el-link>
+              <el-link type="primary" :underline="true" :href="'/game/'+scope.row.gameId+'/rule/'+scope.row.ruleId">
+                {{ scope.row.ruleName }}
+              </el-link>
             </template>
           </el-table-column>
-          <el-table-column label="平台" >
+          <el-table-column label="平台">
             <template slot-scope="scope">
-              <el-link type="primary" :underline="true" :href="'/platform/'+scope.row.platformId" >{{scope.row.platformName}}</el-link>
+              <el-link type="primary" :underline="true" :href="'/platform/'+scope.row.platformId">
+                {{ scope.row.platformName }}
+              </el-link>
             </template>
           </el-table-column>
-          <el-table-column label="时长" prop="time"></el-table-column>
-          <el-table-column label="详情">
+          <el-table-column label="时长">
             <template slot-scope="scope">
-              <el-button @click="goFRDetail(scope.row.recordId)" type="text" class="bu" style="margin-left: -35px" width="100">查看</el-button>
+              {{ changeFRTime(scope.row.time) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="上传时间">
+            <template slot-scope="scope">
+              {{ (changeDateYMD(scope.row.date)) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="链接">
+            <template slot-scope="scope">
+              <el-link :href="scope.row.video" :underline="true" type="primary"><i class="fa fa-video-camera"
+                                                                                   style="font-size: 20px"></i>
+              </el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -144,12 +159,15 @@
 </template>
 
 <script>
+import {changeDateFrom, changeDateYMD, changeFRTime} from "@/assets/js/util";
+
 export default {
   name: "Ad",
-  data (){
+  data() {
     return {
       frList: [],
       rankUserList: [],
+      newObj: {},
       queryInfo: {
         // 当前的页数
         pageNum: 1,
@@ -160,24 +178,32 @@ export default {
     }
   },
   methods : {
-    asd(){
-      this.$router.push({ path:'/news/1'})
+    asd(id) {
+      this.$router.push({path: '/news/' + id})
     },
-    async getFRList(){
-      const {data: res } = await this.$http.get('/api/api/fastRecord/list/last/')
+    async getFRList() {
+      const {data: res} = await this.$http.get('/api/api/fastRecord/list/last/')
       this.frList = res.data
     },
-    async getUserRank(){
-      const {data: res } = await this.$http.get('/api/api/index/rank/user')
+    async getUserRank() {
+      const {data: res} = await this.$http.get('/api/api/index/rank/user')
       this.rankUserList = res.data
     },
-    goUserDe (userId){
-      this.$router.push('/user/'+userId)
-    }
+    goUserDe(userId) {
+      this.$router.push('/user/' + userId)
+    },
+    async getLastNews() {
+      const {data: res} = await this.$http.get('/api/api/news/list/last/')
+      this.newObj = res.data
+    },
+    changeFRTime,
+    changeDateYMD,
+    changeDateFrom
   },
   mounted() {
     this.getFRList()
     this.getUserRank()
+    this.getLastNews()
   }
 }
 </script>

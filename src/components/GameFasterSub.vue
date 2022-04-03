@@ -4,43 +4,46 @@
     <el-col :span="5" style="min-height: 36px"></el-col>
     <el-col :span="14">
       <el-card>
-        <h2>提交 {{'《' + gameObj.name + '》'}} 的速通信息</h2>
-        <el-form ref="frForm" :model="fastRecordForm" style="margin-top: 10px" label-width="100px">
-          <el-form-item label="游戏"  style="width: 50%">
-            <el-input  v-model="gameObj.name" disabled >
+        <h2>提交 {{ '《' + gameObj.name + '》' }} 的速通信息</h2>
+        <el-form ref="frForm" :model="fastRecordForm" :rules="addFormRules" label-width="120px"
+                 style="margin-top: 10px">
+          <el-form-item label="游戏" prop="name" style="width: 50%">
+            <el-input v-model="gameObj.name" disabled>
             </el-input>
           </el-form-item>
-          <el-form-item label="用户"  style="width: 50%">
-            <el-input  v-model="userInfo.username" disabled>
+          <el-form-item label="用户" prop="username" style="width: 50%">
+            <el-input v-model="userInfo.username" disabled>
             </el-input>
           </el-form-item>
-          <el-form-item label="规则" style="width: 50%">
-            <el-select  v-model="fastRecordForm.ruleId" >
-              <el-option v-for="rule in gameObj.rulesList" :key="rule.rulesId"  :value="rule.rulesId" :label="rule.name"></el-option>
+          <el-form-item label="规则" prop="ruleId" style="width: 50%">
+            <el-select v-model="fastRecordForm.ruleId">
+              <el-option v-for="rule in gameObj.rulesList" :key="rule.rulesId" :value="rule.rulesId"
+                         :label="rule.name"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="平台" style="width: 50%">
-            <el-select  v-model="fastRecordForm.platformId" >
-              <el-option v-for="pla in gameObj.platformList" :key="pla.platformId"  :value="pla.platformId" :label="pla.name"></el-option>
+          <el-form-item label="平台" prop="platformId" style="width: 50%">
+            <el-select v-model="fastRecordForm.platformId">
+              <el-option v-for="pla in gameObj.platformList" :key="pla.platformId" :value="pla.platformId"
+                         :label="pla.name"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="时长">
             <div style="display: flex;flex-direction: column">
-              <el-input placeholder="请输入内容" v-model="hour" style="width: 40px;margin-top: 5px">
+              <el-input v-model="hour" placeholder="请输入内容" style="width: 40px;margin-top: 5px" type="number">
                 <template slot="append" style="width: 40px">h</template>
               </el-input>
-              <el-input placeholder="请输入内容" v-model="min" style="width: 40px;margin-top: 5px">
+              <el-input v-model="min" placeholder="请输入内容" style="width: 40px;margin-top: 5px" type="number">
                 <template slot="append" style="width: 40px">m</template>
               </el-input>
-              <el-input placeholder="请输入内容" v-model="sec" style="width: 40px;margin-top: 5px">
+              <el-input v-model="sec" placeholder="请输入内容" style="width: 40px;margin-top: 5px" type="number">
                 <template slot="append" style="width: 40px">s</template>
               </el-input>
-              <el-input placeholder="请输入内容" v-model="ms" style="width: 40px;margin-top: 5px">
+              <el-input v-model="ms" placeholder="请输入内容" style="width: 40px;margin-top: 5px" type="number">
                 <template slot="append" style="width: 40px">ms</template>
               </el-input>
             </div>
           </el-form-item>
-          <el-form-item label="日期" style="width: 50%">
+          <el-form-item label="日期" prop="date" style="width: 50%">
             <el-date-picker
                 v-model="fastRecordForm.date"
                 type="date"
@@ -48,16 +51,16 @@
                 :picker-options="pickerOptions">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="速通视频链接" style="width: 50%">
-            <el-input  v-model="fastRecordForm.video" >
+          <el-form-item label="速通视频链接" prop="video" style="width: 50%">
+            <el-input v-model="fastRecordForm.video">
             </el-input>
           </el-form-item>
-          <el-form-item label="模拟器">
+          <el-form-item label="模拟器" prop="emulator">
             <el-radio v-model="fastRecordForm.emulator" label="1">是</el-radio>
-            <el-radio v-model="fastRecordForm.emulator" label="2" >否</el-radio>
+            <el-radio v-model="fastRecordForm.emulator" label="2">否</el-radio>
           </el-form-item>
-          <el-form-item label="备注" style="width: 50%">
-            <el-input  type="textarea" v-model="fastRecordForm.remark" rows="5">
+          <el-form-item label="备注" prop="remark" style="width: 50%">
+            <el-input type="textarea" v-model="fastRecordForm.remark" rows="5">
             </el-input>
           </el-form-item>
           <el-form-item>
@@ -76,14 +79,14 @@
 export default {
   name: "GameFasterSub",
   data(){
-    return{
+    return {
       gameObj: {},
       gameDeObj: {},
       userInfo: {},
-      hour: '',
-      min: '',
-      sec: '',
-      ms: '',
+      hour: 0,
+      min: 0,
+      sec: 0,
+      ms: 0,
       fastRecordForm: {
         recordId: '',
         userId: '',
@@ -130,23 +133,22 @@ export default {
         }]
       },
       addFormRules: {
-        account: [
-          {required: true, message: '请输入账户', trigger: 'blur'}
+        video: [
+          {required: true, message: '请输入链接', trigger: 'blur'}
         ],
-        password: [
-          {required: true, message: '请输入密码', trigger: 'blur'},
-          {max: 16, min: 8, message: "长度在8~16个字符之间", trigger: 'blur'}
+        date: [
+          {required: true, message: '请选择日期', trigger: 'blur'}
         ],
-        username: [
-          {required: true, message: '请输入用户名', trigger: 'blur'}
+        ruleId: [
+          {required: true, message: '请选择规则', trigger: 'change'}
         ],
-        email: [
-          {required: true, message: '请输入邮箱', trigger: 'blur'}
+        platformId: [
+          {required: true, message: '请选择平台', trigger: 'change'}
         ],
-        roleList: [
-          {required: true, message: '请选择角色', trigger: 'change'}
+        emulator: [
+          {required: true, message: '请选择是或否', trigger: 'change'}
         ],
-        mobile: [
+        remark: [
           {require: false}
         ]
       }
@@ -157,7 +159,6 @@ export default {
       const {data: res} = await this.$http.get('/api/api/games/list/one/'+this.$route.params.gameid)
       this.gameObj = res
       this.fastRecordForm.gameId = this.gameObj.gameId
-
       this.fastRecordForm.ruleId = this.gameObj.rulesList[0].rulesId
       this.fastRecordForm.platformId = this.gameObj.platformList[0].platformId
       this.fastRecordForm.emulator = '2'
@@ -166,15 +167,24 @@ export default {
       const {data: res} = await this.$http.get('/api/api/user/infos')
       this.userInfo = res.data
     },
-    async send (){
-      this.fastRecordForm.time = this.hour*3600000+this.min*60000+this.sec*1000+this.ms
-      this.fastRecordForm.userId = this.userInfo.creId
-      const {data: res} = await this.$http.post('/api/api/fastRecord/send/',this.fastRecordForm)
-      if (res.flag){
-        this.resetForm()
-        return this.$message.success("提交成功")
-      }
-      return this.$message.error("提交失败")
+    async send () {
+      await this.$refs.frForm.validate(async valid => {
+        if (!valid) return
+        if (Number(this.hour) < 0 || Number(this.min) < 0 || Number(this.sec) < 0 || Number(this.ms) < 0) {
+          return this.$message.warning("请输入时长")
+        } else {
+          this.fastRecordForm.time = Number(this.hour * (60 * 60 * 1000)) + Number(this.min * (60 * 1000)) + Number(this.sec * 1000) + Number(this.ms)
+          this.fastRecordForm.userId = this.userInfo.creId
+          const {data: res} = await this.$http.post('/api/api/fastRecord/send/', this.fastRecordForm)
+          if (res.flag) {
+            this.resetForm()
+            return this.$message.success("提交成功")
+          }
+          return this.$message.error("提交失败")
+        }
+
+      })
+
     },
     resetForm () {
       this.$refs.frForm.resetFields()
@@ -192,7 +202,6 @@ export default {
   mounted() {
     this.getGame()
     this.getUserInfo()
-    // this.getRuleList()
   }
 }
 </script>

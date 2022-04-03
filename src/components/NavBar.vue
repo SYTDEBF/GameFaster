@@ -41,13 +41,12 @@
         <el-button plain @click="goLogin">登录</el-button>
       </div>
     </el-header>
-    <el-container>
+
       <el-main :style="defaultHeight">
         <router-view></router-view>
       </el-main>
       <el-footer style="display: flex;justify-content: center;align-items: center;background-color: #E9EEF3;color:#82848a">©CopyRight 2017-2022 MZHSY All Rights Reserved. 梅子黄时雨 版权所有</el-footer>
     </el-container>
-  </el-container>
 </template>
 
 <script>
@@ -92,7 +91,7 @@ export default {
 
     },
     async getUserInfo(){
-      const {data: res} = await this.$http.get('/api/api/user/list/one/'+window.localStorage.getItem('uid'))
+      const {data: res} = await this.$http.get('/api/api/user/list/one/basic/' + window.localStorage.getItem('uid'))
       this.userInfo = res.data
     },
   },

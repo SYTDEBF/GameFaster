@@ -13,49 +13,85 @@ import PlaDetail from "@/components/PlaDetail";
 import RuleDetail from "@/components/RuleDetail";
 import SearchRes from "@/components/SearchRes";
 import Page404 from "@/components/Page404";
+import GameFasterEdit from "@/components/GameFasterEdit";
+
 Vue.use(VueRouter)
 
 const routes = [
-  { path: '/', component: NavBar,
-      children: [
-          {path: "/", component: Home,meta: {
-                  title: "GameFaster - 首页"
-              }},
-          {path: "games", component: games,meta: {
+    {
+        path: '/', component: NavBar,
+        children: [
+            {
+                path: "/", component: Home, meta: {
+                    title: "GameFaster - 首页"
+                }
+            },
+            {
+                path: "games", component: games, meta: {
                   title: "GameFaster - 游戏"
               }},
           {path: "news", component: news,children:[],meta: {
                   title: "GameFaster - 新闻"
-              }},
-          {path:'news/:nid',component: NewsDetail,meta: {
-                  title: "GameFaster - 新闻详情"
-              }},
-          {path: 'games/:gid',component: GamesDetail,meta: {
-                  title: "GameFaster - 游戏详情"
-              }},
-          {path: 'gamefaster/sub/:gameid',component: GameFasterSub,meta: {
-                  title: "GameFaster - 游戏速通信息提交"
-              }},
-          {path: 'platform/:pid',component: PlaDetail,meta: {
-                  title: "GameFaster - 平台详细信息"
-              }},
-          {path: 'game/:gamesid/rule/:rid',component: RuleDetail,meta: {
-                  title: "GameFaster - 规则详情"
-              }},
-          {path: 'user/:uid',component: UserDetail,meta: {
-                  title: "GameFaster - 用户空间"
-              }},
-          {path: 'search/:keyword',component: SearchRes,meta: {
-                  title: "GameFaster - 搜索结果"
-              }},
-          {path: '/404',component: Page404,meta: {
-                  title: "GameFaster - 无法找到页面"
-              }}
+              }
+          },
+            {
+                path: 'news/:nid', component: NewsDetail, meta: {
+                    title: "GameFaster - 新闻详情"
+                }
+            },
+            {
+                path: 'games/:gid', component: GamesDetail, meta: {
+                    title: "GameFaster - 游戏详情"
+                }
+            },
+            {
+                path: 'gamefaster/sub/:gameid', component: GameFasterSub, meta: {
+                    title: "GameFaster - 游戏速通信息提交"
+                }
+            },
+            {
+                path: 'gamefaster/edit/:fid', component: GameFasterEdit, meta: {
+                    title: "GameFaster - 游戏速通信息编辑"
+                }
+            },
+            {
+                path: 'platform/:pid', component: PlaDetail, meta: {
+                    title: "GameFaster - 平台详细信息"
+                }
+            },
+            {
+                path: 'game/:gamesid/rule/:rid', component: RuleDetail, meta: {
+                    title: "GameFaster - 规则详情"
+                }
+            },
+            {
+                path: 'user/:uid', component: UserDetail, meta: {
+                    title: "GameFaster - 用户空间"
+                }
+            },
+            {
+                path: 'search/:keyword', component: SearchRes, meta: {
+                    title: "GameFaster - 搜索结果"
+                }
+            },
+            {
+                path: '/404', component: Page404, meta: {
+                    title: "GameFaster - 无法找到页面"
+                }
+            }
 
-    ] },
-    {path: '/userLogin',component: Login,meta: {
+        ]
+    },
+    {
+        path: '/userLogin', component: Login, meta: {
             title: "GameFaster - 用户登录"
-        }},
+        }
+    },
+    // 所有未定义路由，全部重定向到404页
+    {
+        path: '*',
+        redirect: '/404'
+    }
 
 ]
 
