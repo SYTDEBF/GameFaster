@@ -91,16 +91,17 @@
                 <el-tab-pane label="速通信息" name="second" style="width: 110%;height: 100%">
                   <el-table stripe :data="frList">
                     <el-table-column label="编号" prop="recordId"></el-table-column>
-                    <el-table-column label="上传用户">
+                    <el-table-column label="游戏名">
                       <template slot-scope="scope">
-                        <el-link type="primary" :underline="true" disabled :href="'/user/'+scope.row.userId">
-                          {{ scope.row.username }}
+                        <el-link :href="'/games/'+scope.row.userId" :underline="true" type="primary">
+                          {{ scope.row.gameName }}
                         </el-link>
                       </template>
                     </el-table-column>
                     <el-table-column label="规则">
                       <template slot-scope="scope">
-                        <el-link type="primary" :underline="true" :href="'/newpre/'+scope.row.rulesId">
+                        <el-link :href="'/game/'+scope.row.gameId+'/rule/'+scope.row.ruleId" :underline="true"
+                                 type="primary">
                           {{ scope.row.ruleName }}
                         </el-link>
                       </template>
@@ -144,6 +145,14 @@
                       </template>
                     </el-table-column>
                   </el-table>
+                  <el-pagination
+                      :current-page="queryInfo.pageNum" :page-size="queryInfo.pageSize"
+                      :total="total"
+                      background
+                      class="block"
+                      layout="total,prev, pager, next,jumper"
+                      @current-change="handleCurrentChange">
+                  </el-pagination>
                 </el-tab-pane>
               </el-tabs>
             </el-col>
@@ -209,7 +218,7 @@ export default {
         // 当前的页数
         pageNum: 1,
         // 当前每页显示多少条数据
-        pageSize: 5,
+        pageSize: 6,
         keyword: ""
       }
     }
@@ -274,6 +283,7 @@ export default {
     // 监听 pageNum 的改变
     handleCurrentChange(newPage) {
       this.queryInfo.pageNum = newPage
+      this.getFRList()
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();

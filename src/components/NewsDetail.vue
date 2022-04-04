@@ -9,7 +9,7 @@
         于 {{ newObj.date }} 编写</span>
       </div>
       <el-divider></el-divider>
-      <div v-html="disContent" class="news-box">
+      <div class="news-box" style="display: flex;flex-direction: column;justify-content: center" v-html="disContent">
       </div>
     </el-card>
     <div style="width: 25%"></div>
@@ -135,6 +135,7 @@ export default {
       let content = JSON.parse(res.data.content)
       const editor = createEditor({content})
       this.disContent = editor.getHtml()
+      console.log(this.disContent)
       this.newObj = res.data
       this.newObj.date = this.changeDateFrom(this.newObj.date);
     },
@@ -294,23 +295,33 @@ export default {
   display: flex;
   margin-top: 10px;
 }
->>> table {
-  padding: 0;
-  word-break: initial;
-}
->>> table tr {
-  border: 1px solid #dfe2e5;
-  margin: 0;
-  padding: 0;
-}
->>> table tr:nth-child(2n),
-thead {
-  background-color: #f8f8f8;
-}
->>> table th {
-  font-weight: bold;
-  border: 1px solid #dfe2e5;
-  border-bottom: 0;
+
+ >>> table {
+   padding: 0;
+   word-break: initial;
+ }
+
+ >>> table tr {
+   border: 1px solid #dfe2e5;
+   margin: 0;
+   padding: 0;
+ }
+
+ >>> iframe {
+   width: 80%;
+   height: 500px;
+
+ }
+
+ >>> table tr:nth-child(2n),
+ thead {
+   background-color: #f8f8f8;
+ }
+
+ >>> table th {
+   font-weight: bold;
+   border: 1px solid #dfe2e5;
+   border-bottom: 0;
   margin: 0;
   padding: 6px 13px;
 }
@@ -365,8 +376,11 @@ table td:last-child {
 }
 
 >>> img {
-  max-width: 20%;
-  max-height: 50%;
+  margin-bottom: 15px;
+  width: auto;
+  height: auto;
+  max-width: 30%;
+  max-height: 30%;
   align-items: center;
 }
 </style>
